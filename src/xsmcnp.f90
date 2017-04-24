@@ -591,6 +591,7 @@ enddo
  if(grp_erg_bnd(num_grp) .lt. low_erg_bin) low_erg_bin=grp_erg_bnd(num_grp)/2.0
  do j=2, num_grp
    if(grp_erg_bnd(j) .ge. grp_erg_bnd(j-1)) then
+   
      write(*,"(A,':', 'grp upper boundary not in increasing order, from grp=', I0, ' to ', I0)") &
 	   trim(curfile), j-1, j
 	 write(LOGUNIT,"(A,':', 'grp upper boundary not in increasing order, from grp=', I0, ' to ', I0)") &
@@ -638,6 +639,7 @@ elseif(ex2) then !grp_erg.bnd exists
  if(grp_erg_bnd(num_grp) .lt. low_erg_bin) low_erg_bin=grp_erg_bnd(num_grp)/2.0
  do j=2, num_grp
    if(grp_erg_bnd(j) .ge. grp_erg_bnd(j-1)) then
+      write(*,"('test01', 10(ES12.5,2x))") grp_erg_bnd
      write(*,"(A,':', 'grp upper boundary not in increasing order, from grp=', I0, ' to ', I0)") &
 	   trim(curfile), j-1, j
 	 write(LOGUNIT,"(A,':', 'grp upper boundary not in increasing order, from grp=', I0, ' to ', I0)") &
@@ -879,8 +881,9 @@ do i=1, num_mat
   do j=1, num_grp
     m=m+1
     if(fis_flag(i) .eq. 1) then
-    stream_b2(m)=mat_info(i)%xs_p(1)%sig_a(j)-  &
-              mat_info(i)%xs_p(1)%mv_f(j)/grp_mat_nu(j,i)
+    !mcnp sig_a excludes fission, but seems not used, so commented out
+    stream_b2(m)=mat_info(i)%xs_p(1)%sig_a(j)  !& 
+    !         - mat_info(i)%xs_p(1)%mv_f(j)/grp_mat_nu(j,i)
     else
     stream_b2(m)=mat_info(i)%xs_p(1)%sig_a(j)
     endif
@@ -1059,9 +1062,9 @@ endif
 i=num_grp
 do while (i .gt. 0) 
   if (i .eq. num_grp) then
-     write (outunit, "('e0 ', 3x,6(ES10.3,1x)  )") (grp_erg_bnd(k), k=i, i-5, -1)
+     write (outunit, "('e0 ', 3x,6(ES10.3,1x)  )") (grp_erg_bnd(k), k=i, max(i-5,1), -1)
   else 
-     write (outunit, "( 6x,6(ES10.3,1x)  )") (grp_erg_bnd(k), k=i, i-5, -1)
+     write (outunit, "( 6x,6(ES10.3,1x)  )") (grp_erg_bnd(k), k=i, max(i-5,1), -1)
   endif
   i=i-6
 enddo

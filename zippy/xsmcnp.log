@@ -1,0 +1,23 @@
+xsmcnp v2.45  Log generated on    21:23:56  on 04/23/2017
+ 
+Input cross section file: zippy2.xs (pentran format) 
+xs particle type entered (2 for photon, 1 for neutron): 1
+Pn order of xs entered: 0
+Pn order of MCNP xs output : 0
+PENTRAN xs type entered (0: (2l+1) not factored in, 1: factored in): : 0
+ ---------------checking xs data----------------------
+Number of Columns found in xs file: 5
+self-scattering column located at: 4
+ 
+XS file read sucessful: zippy2.xs
+   Num of groups    : 2
+   Num of materials : 3
+   Upsacttering     : No
+group energy boundary file read sucessful: grp_erg.bnd
+mat chi file read sucessful: grp_mat.chi
+mat nu file read sucessful: grp_mat.nu
+ ----------------xs output files--------------------------
+output file (mncp multigroup xs lib):  mgxs
+output file (xsdir file):  xsdir
+output file (sample mcnp inp with material card):  mcnp.inp
+ conversion done: from pentran to mcnp multigroup format

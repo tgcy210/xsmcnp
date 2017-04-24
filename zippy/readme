@@ -1,0 +1,49 @@
+
+Convert xs from PENTRAN format to MCNP multigroup format
+
+NOTE: direct conversion for PO xs files. For higher Pn order xs, MORSE treament is used to convert 
+      higher order Pn order moments to MCNP discrete sampling angles except for P1, where a continous
+      sampling function is used. (see xsmcnp.pdf)
+
+The code will ask for P order of the PENTRAN xs file, to read the
+correct section of xs data! but onl P0 data will be written in the MCNP
+library
+
+usage: 
+     xsmcnp <pentran_xs_filename>
+   
+optional input files: 
+
+grp_erg.bnd : group upper boundary
+              note : grp_upper(num_grp)
+	      format:
+	      
+	        upper_grp1
+                upper_grp2
+	        ......
+
+grp_mat.chi : fission chi   
+              note: chi(num_grp, num_mat) 
+	      format:
+	      
+	      chi_grp1_mat1 chi_grp2_mat1 chi_grp3_mat1 ...
+              chi_grp1_mat2 chi_grp2_mat2 chi_grp3_mat2 ...
+	      ......
+	      
+grp_mat.nu : fission nu 
+             note: nu(num_grp, num_mat)
+             format
+
+	      nu_grp1_mat1 nu_grp2_mat1 nu_grp3_mat1 ...
+              nu_grp1_mat2 nu_grp2_mat2 nu_grp3_mat2 ...
+	      ......
+
+Output files
+
+mgxs     :  mcnp multigroup xs data file
+xsdir    :  mcnp xs isotope index file
+mcnp.inp :  a sample mcnp input file (multigroup with generated material card)
+
+
+
+              
