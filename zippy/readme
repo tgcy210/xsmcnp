@@ -2,12 +2,9 @@
 Convert xs from PENTRAN format to MCNP multigroup format
 
 NOTE: direct conversion for PO xs files. For higher Pn order xs, MORSE treament is used to convert 
-      higher order Pn order moments to MCNP discrete sampling angles except for P1, where a continous
-      sampling function is used. (see xsmcnp.pdf)
+      Pn order moments to MCNP discrete sampling angles except for P1, where a continous
+      sampling function is used. (see UserGuide_xsmcnp.pdf)
 
-The code will ask for P order of the PENTRAN xs file, to read the
-correct section of xs data! but onl P0 data will be written in the MCNP
-library
 
 usage: 
      xsmcnp <pentran_xs_filename>
