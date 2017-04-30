@@ -639,7 +639,6 @@ elseif(ex2) then !grp_erg.bnd exists
  if(grp_erg_bnd(num_grp) .lt. low_erg_bin) low_erg_bin=grp_erg_bnd(num_grp)/2.0
  do j=2, num_grp
    if(grp_erg_bnd(j) .ge. grp_erg_bnd(j-1)) then
-      write(*,"('test01', 10(ES12.5,2x))") grp_erg_bnd
      write(*,"(A,':', 'grp upper boundary not in increasing order, from grp=', I0, ' to ', I0)") &
 	   trim(curfile), j-1, j
 	 write(LOGUNIT,"(A,':', 'grp upper boundary not in increasing order, from grp=', I0, ' to ', I0)") &
@@ -709,9 +708,17 @@ elseif(IsChiFileRequired .eq. 0) then
   enddo
 
 else
-   write(*,"('Chi file missing: ', A )") trim(prbname)//'.chi or '//trim(chifile)
-  write(LOGUNIT,"('Conversion Failed ' )") 
-  stop 'Conversion Failed'    
+  write(*,"('Chi file missing: ', A )") trim(prbname)//'.chi or '//trim(chifile)
+  write(LOGUNIT,"('Chi file missing: ', A )") trim(prbname)//'.chi or '//trim(chifile)
+  
+  write(*,"('Set Chi=1 for the first group  ' )") 
+  write(LOGUNIT,"('Set Chi=1 for the first group  ' )") 
+  do j=1 , num_mat
+    grp_mat_chi(:,j)=0.0
+    if(fis_flag(j) .ne. 0) grp_mat_chi(1,j)=1.0
+  enddo
+  !write(LOGUNIT,"('Conversion Failed ' )") 
+  !stop 'Conversion Failed'    
 endif
 
 !check group nu (nu for each group and mat)
@@ -759,8 +766,14 @@ elseif(IsNubarFileRequired .eq. 0) then
   grp_mat_nu=nu_const
 else
   write(*,"('nubar file missing: ', A )") trim(prbname)//'.nub or '//trim(nvfile)
-  write(LOGUNIT,"('Conversion Failed ' )") 
-  stop 'Conversion Failed' 
+  write(LOGUNIT,"('nubar file missing: ', A )") trim(prbname)//'.nub or '//trim(nvfile)
+  write(*,"('set nu_bar to default: ', f10.5 )") nu_const
+  write(LOGUNIT,"('set nu_bar to default: ', f10.5 )") nu_const
+  
+  grp_mat_nu=nu_const
+    
+! write(LOGUNIT,"('Conversion Failed ' )") 
+ ! stop 'Conversion Failed' 
 endif
 
 !output MCNP xs lib file
@@ -1197,9 +1210,6 @@ double precision  areal, breal, term(3)
 
 
 dflag=leg_mgxs
-if(mat_num .eq. 3 .and. g_from .eq. 48 .and. g_to .eq. 48) then
-    write (*,*) "test 01"
-endif
 ! calculate M_mor
 areal=fpl(0)
 do k=0, leg_mgxs
@@ -1214,11 +1224,6 @@ enddo !k
 !The Cholesky–Banachiewicz and Cholesky–Crout algorithm
 !https://en.wikipedia.org/wiki/Cholesky_decomposition
 
-if (mat_num .eq. 3 .and. g_from .eq. 14 .and. g_to .eq. 14) then
-    write(LOGUNIT, "('test 03: ', 'mat=',I0, 2x, I0,'->', I0 )") mat_num, g_from, g_to
-    write(LOGUNIT, "('M(0:3)= ', 4(f10.4, 2x) )")  M_mor(0:3)
-    write(LOGUNIT, "('a(2:0)= ', 3(f10.4, 2x) )")  q_poly(ord_poly)%a_coeff(2:0:-1)
-endif
 do j=0, num_poly-1
   areal=M_mor(2*j)
   do k=0, j-1
@@ -1256,9 +1261,6 @@ do i=0, ord_poly
     q_poly(i)%rank=i
 enddo
 
-if (mat_num .eq. 3 .and. g_from .eq. 14 .and. g_to .eq. 14) then
-    write(LOGUNIT, "('test 03: ', 'mat=',I0, 2x, I0,'->', I0 )") mat_num, g_from, g_to
-endif
 
 do i=0, ord_poly-1
   N_mor(i)=0
@@ -1316,12 +1318,7 @@ do i=0, ord_poly-1
 enddo  !i 
 
 call poly_roots(mat_num, g_from, g_to,dflag)
-if (mat_num .eq. 3 .and. g_from .eq. 14 .and. g_to .eq. 14) then
-    write(LOGUNIT, "('test 02: ', 'mat=',I0, 2x, I0,'->', I0 )") mat_num, g_from, g_to
-    write(LOGUNIT, "('M(0:3)= ', 4(f10.4, 2x) )")  M_mor(0:3)
-    write(LOGUNIT, "('a(2:0)= ', 3(f10.4, 2x) )")  q_poly(ord_poly)%a_coeff(2:0:-1)
-endif
-    
+   
 
 term(2)=0
 do i=1, ord_poly !num of weight
@@ -1379,10 +1376,12 @@ do i=num_poly, num_poly+j-1
     fpl(i)=0
 enddo
 k=0
+
 do i=num_poly+j, leg_mgxs
- k=k+1   
- fpl(i)=q_poly(num_poly)%root(k)
+ k=k+1 
+ fpl(i)=q_poly(ord_poly)%root(k)
 enddo
+
 
 if(dflag .gt. leg_mgxs) then
     write(LOGUNIT,"('fpl(1:', I0,')=', 10(ES12.5, 2x))") leg_mgxs, fpl(1:leg_mgxs)
